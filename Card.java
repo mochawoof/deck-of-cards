@@ -11,6 +11,10 @@ class Card extends JWindow {
     private int height;
     private boolean isFlipped = false;
     
+    
+    private int clickCount = 0;
+    private long lastClickTime = 0;
+    
     private void adjustSize() {
         double aspect = (double) image.getHeight() / image.getWidth();
         height = (int)(Main.CARD_WIDTH * aspect);
@@ -22,9 +26,10 @@ class Card extends JWindow {
         repaint();
     }
     
-    public Card(BufferedImage image) {
+    public Card(BufferedImage image, Point location) {
         thisCard = this;
         this.image = image;
+        setLocation(location);
         
         adjustSize();
         
@@ -35,6 +40,7 @@ class Card extends JWindow {
             public void mousePressed(MouseEvent e) {
                 if (e.getButton() == MouseEvent.BUTTON1) {
                     isMouseDown = true;
+                    // Mouse offset in card
                     Point offset = new Point(e.getXOnScreen() - thisCard.getLocation().x, e.getYOnScreen() - thisCard.getLocation().y);
                     
                     // Bring to front
@@ -44,9 +50,20 @@ class Card extends JWindow {
                     new SwingWorker() {
                         @Override
                         protected Integer doInBackground() {
+                            Point mouseLocation = new Point(e.getXOnScreen(), e.getYOnScreen());
                             while (isMouseDown) {
-                                Point mouseLocation = MouseInfo.getPointerInfo().getLocation();
-                                thisCard.setLocation(new Point(mouseLocation.x - offset.x, mouseLocation.y - offset.y));
+                                mouseLocation = MouseInfo.getPointerInfo().getLocation();
+                                // Card location relative to mouse offset
+                                Point relativeLocation = new Point(mouseLocation.x - offset.x, mouseLocation.y - offset.y);
+                                
+                                thisCard.setLocation(relativeLocation);
+                            }
+                            
+                            // After mouse released
+                            // If card wasn't dragged, flip it
+                            Point delta = new Point(e.getXOnScreen() - mouseLocation.x, e.getYOnScreen() - mouseLocation.y);
+                            if (delta.x == 0 && delta.y == 0) {
+                                flip();
                             }
                             
                             return 0;
@@ -59,8 +76,19 @@ class Card extends JWindow {
             public void mouseReleased(MouseEvent e) {
                 if (e.getButton() == MouseEvent.BUTTON1) {
                     isMouseDown = false;
-                } else if (e.getButton() == MouseEvent.BUTTON3) {
-                    flip();
+                    
+                    // Detect a double click
+                    if (lastClickTime < System.currentTimeMillis() - 500) {
+                        clickCount = 0;
+                    }
+                    clickCount++;
+                    lastClickTime = System.currentTimeMillis();
+                    
+                    // If double clicked
+                    if (clickCount >= 2) {
+                        // Not implemented yet
+                        clickCount = 0;
+                    }
                 }
             }
             
