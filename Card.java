@@ -6,6 +6,10 @@ import java.awt.event.*;
 
 class Card extends JWindow {
     private BufferedImage image;
+    
+    // Used for double buffering
+    private JPanel imagePanel;
+    
     private boolean isMouseDown = false;
     private Card thisCard;
     private int height;
@@ -26,10 +30,28 @@ class Card extends JWindow {
         repaint();
     }
     
-    public Card(BufferedImage image, Point location) {
+    public Card(BufferedImage image) {
         thisCard = this;
+        
+        setLayout(new BorderLayout());
+        // imagePanel
+        imagePanel = new JPanel() {          
+            @Override
+            public void paintComponent(Graphics g) {
+                adjustSize();
+                
+                BufferedImage applicableImage = image;
+                
+                if (isFlipped) {
+                    applicableImage = Main.getBackImage();
+                }
+                
+                g.drawImage(applicableImage.getScaledInstance(Main.CARD_WIDTH, height, Image.SCALE_SMOOTH), 0, 0, null);
+            }
+        };
+        add(imagePanel, BorderLayout.CENTER);
+        
         this.image = image;
-        setLocation(location);
         
         adjustSize();
         
@@ -99,18 +121,5 @@ class Card extends JWindow {
             @Override
             public void mouseEntered(MouseEvent e) {}
         });
-    }
-    
-    @Override
-    public void paint(Graphics g) {
-        adjustSize();
-        
-        BufferedImage applicableImage = image;
-        
-        if (isFlipped) {
-            applicableImage = Main.getBackImage();
-        }
-        
-        g.drawImage(applicableImage.getScaledInstance(Main.CARD_WIDTH, height, Image.SCALE_SMOOTH), 0, 0, null);
     }
 }

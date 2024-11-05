@@ -43,9 +43,10 @@ class Main {
     }
     
     private static void reload_cards() {
-        cards = new Card[CARD_COUNT - 50];
+        cards = new Card[CARD_COUNT];
         for (int i=0; i < cards.length; i++) {
-            cards[i] = new Card(sheet.get(cardNumberToXY(i + 1)), new Point(100 + (i * 2), 100 + (i * 2)));
+            cards[i] = new Card(sheet.get(cardNumberToXY(i + 1)));
+            cards[i].setLocation(new Point(100 + (i * 2), 100 + (i * 2)));
         }
     }
     
