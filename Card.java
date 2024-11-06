@@ -1,62 +1,113 @@
-import java.awt.Point;
+import javax.swing.*;
 
-class Card {
-    public static Card[] cards = new Card[0];
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.image.BufferedImage;
+
+import java.util.ArrayList;
+
+class Card extends JComponent {
+    private BufferedImage image;
+    private BufferedImage flippedImage;
+    private Point position;
+    private Card thisCard;
     
-    public Point sprite;
-    public Point location;
+    private boolean isMousePressed = false;
+    private boolean isFlipped = false;
     
-    public boolean flipped = false;
+    private JPopupMenu rightClickMenu;
     
-    public Card(Window parent, Point sprite, Point location) {
-        this.sprite = sprite;
-        this.location = location;
+    private ArrayList<Card> cards = new ArrayList<Card>();
+    
+    public Card(BufferedImage image, BufferedImage flippedImage, Point initialPosition) {
+        setBounds(0, 0, 200, 200);
+        this.image = image;
+        this.flippedImage = flippedImage;
+        position = initialPosition;
+        thisCard = this;
+        cards.add(this);
         
-        // Add this card to cards
-        addMe();
+        rightClickMenu = new JPopupMenu();
         
-        parent.repaint();
-    }
-    
-    private void addMe() {
-        Card[] oldCards = cards;
-        cards = new Card[oldCards.length + 1];
-        for (int i=0; i < oldCards.length; i++) {
-            cards[i] = oldCards[i];
-        }
-        cards[cards.length - 1] = this;
-    }
-        
-    public Card(Window parent, int spritex, int spritey, int locationx, int locationy) {
-        this(parent, new Point(spritex, spritey), new Point(locationx, locationy));
-    }
-    
-    public void bringToFront() {
-        dispose();
-        addMe();
-    }
-    
-    public void dispose() {
-        // Make this card null
-        Card[] oldCards = cards;
-        for (int i=0; i < oldCards.length; i++) {
-            if (oldCards[i].hashCode() == this.hashCode()) {
-                oldCards[i] = null;
+        JMenuItem flipItem = new JMenuItem("Flip");
+        flipItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                flip();
             }
-        }
+        });
+        rightClickMenu.add(flipItem);
         
-        // Shift cards to cover this dead card
-        cards = new Card[oldCards.length - 1];
-        boolean isShifting = false;
-        for (int i=0; i < cards.length; i++) {
-            if (oldCards[i] == null) {
-                isShifting = true;
+        JMenuItem moveAllIntoDeckItem = new JMenuItem("Move All Into Deck");
+        rightClickMenu.add(moveAllIntoDeckItem);
+        
+        JMenuItem moveAllIntoFannedDeckItem = new JMenuItem("Move All Into Fanned Deck");
+        rightClickMenu.add(moveAllIntoFannedDeckItem);
+        
+        JMenuItem shuffleAllItem = new JMenuItem("Shuffle All");
+        rightClickMenu.add(shuffleAllItem);
+        
+        addMouseListener(new MouseListener() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                Point mouseOffset = e.getPoint();
+                
+                // On left click
+                if (e.getButton() == MouseEvent.BUTTON1) {
+                    isMousePressed = true;
+                    if (e.getClickCount() != 2) {
+                        ((JLayeredPane) getParent()).moveToFront(thisCard);
+                        
+                        new SwingWorker() {
+                            public Integer doInBackground() {
+                                while (isMousePressed) {
+                                    Point mousePosition = MouseInfo.getPointerInfo().getLocation();
+                                    position = new Point(mousePosition.x - mouseOffset.x, mousePosition.y - mouseOffset.y);
+                                    repaint();
+                                }                      
+                                
+                                return 1;
+                            }
+                        }.execute();
+                    } else {
+                        flip();
+                    }
+                } else if (e.getButton() == MouseEvent.BUTTON3) {
+                    // On right click
+                    rightClickMenu.show(thisCard, mouseOffset.x, mouseOffset.y);
+                }
             }
-            if (isShifting) {
-                cards[i] = oldCards[i + 1];
-            } else {
-                cards[i] = oldCards[i];
+            
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (e.getButton() == MouseEvent.BUTTON1) {
+                    isMousePressed = false;
+                }
             }
+            
+            // Define empty overrides to prevent the compiler from bitching
+            @Override
+            public void mouseExited(MouseEvent e) {}
+            @Override
+            public void mouseEntered(MouseEvent e) {}
+            @Override
+            public void mouseClicked(MouseEvent e) {}
+        });
+    }
+    
+    private void flip() {
+        isFlipped = !isFlipped;
+        repaint();
+    }
+    
+    @Override
+    public void paintComponent(Graphics g) {
+        setBounds(position.x, position.y, image.getWidth(), image.getHeight());
+        super.paintComponent(g);
+        
+        if (!isFlipped) {
+            g.drawImage(image, 0, 0, null);
+        } else {
+            g.drawImage(flippedImage, 0, 0, null);
         }
     }
 }

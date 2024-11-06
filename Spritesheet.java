@@ -2,38 +2,32 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 class Spritesheet {
-    private BufferedImage image;
     private int cutx; private int cuty;
+    private BufferedImage image;
+    private int tileScale;
     
-    public Spritesheet(BufferedImage image, int cutx, int cuty) {
+    public Spritesheet(BufferedImage image, int cutx, int cuty, int tileScale) {
+        this.cutx = cutx;
+        this.cuty = cuty;
         this.image = image;
-        this.cutx = cutx; this.cuty = cuty;
+        this.tileScale = tileScale;
     }
     
     public BufferedImage get(int x, int y) {
         int tileWidth = image.getWidth() / cutx;
-        int tileHeight = image.getHeight() / cuty;
+        int tileHeight = image.getHeight() / cuty;        
+        BufferedImage subImage = image.getSubimage(x * tileWidth, y * tileHeight, tileWidth, tileHeight);
         
-        BufferedImage subImage = image.getSubimage(tileWidth * x, tileHeight * y, tileWidth, tileHeight);
+        double aspect = (double) tileHeight / tileWidth;
+        Image scaledSubImage = subImage.getScaledInstance(tileScale, (int) ((double) tileScale * aspect), Image.SCALE_SMOOTH);
         
-        if (Main.CARD_WIDTH > 0) {
-            double aspect = (double) tileHeight / tileWidth;
-            int cardHeight = (int) ((double) Main.CARD_WIDTH * aspect);
-            
-            int scaleMode = Image.SCALE_SMOOTH;
-            if (Main.POTATO_MODE) {
-                scaleMode = Image.SCALE_FAST;
-            }
-            
-            Image scaledRawImage = subImage.getScaledInstance(Main.CARD_WIDTH, cardHeight, scaleMode);
-            subImage = new BufferedImage(Main.CARD_WIDTH, cardHeight, BufferedImage.TYPE_INT_ARGB);
-            subImage.getGraphics().drawImage(scaledRawImage, 0, 0, null);
-        }
+        BufferedImage finalImage = new BufferedImage(scaledSubImage.getWidth(null), scaledSubImage.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+        finalImage.getGraphics().drawImage(scaledSubImage, 0, 0, null);
         
-        return subImage;
+        return finalImage;
     }
     
-    public BufferedImage get(Point point) {
-        return get(point.x, point.y);
+    public BufferedImage get(Point coords) {
+        return get(coords.x, coords.y);
     }
 }
