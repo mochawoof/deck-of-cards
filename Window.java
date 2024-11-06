@@ -21,6 +21,25 @@ class Window extends JFrame {
         setBackground(new Color(50, 100, 50, 0));
         setVisible(true);
         
+        addMouseListener(new MouseListener() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                
+            }
+            
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            
+            }
+            
+            @Override
+            public void mouseExited(MouseEvent e) {}
+            @Override
+            public void mouseEntered(MouseEvent e) {}
+            @Override
+            public void mouseClicked(MouseEvent e) {}
+        });
+        
         new Card(this, cardNumberToSpriteCoords(49), new Point(100, 100));
         for (int i=1; i <= Main.DECK_COUNT; i++) {
             new Card(this, cardNumberToSpriteCoords(i), new Point(100 + (i * 2), 100 + (i * 2)));

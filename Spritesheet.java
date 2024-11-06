@@ -13,7 +13,24 @@ class Spritesheet {
     public BufferedImage get(int x, int y) {
         int tileWidth = image.getWidth() / cutx;
         int tileHeight = image.getHeight() / cuty;
-        return image.getSubimage(tileWidth * x, tileHeight * y, tileWidth, tileHeight);
+        
+        BufferedImage subImage = image.getSubimage(tileWidth * x, tileHeight * y, tileWidth, tileHeight);
+        
+        if (Main.CARD_WIDTH > 0) {
+            double aspect = (double) tileHeight / tileWidth;
+            int cardHeight = (int) ((double) Main.CARD_WIDTH * aspect);
+            
+            int scaleMode = Image.SCALE_SMOOTH;
+            if (Main.POTATO_MODE) {
+                scaleMode = Image.SCALE_FAST;
+            }
+            
+            Image scaledRawImage = subImage.getScaledInstance(Main.CARD_WIDTH, cardHeight, scaleMode);
+            subImage = new BufferedImage(Main.CARD_WIDTH, cardHeight, BufferedImage.TYPE_INT_ARGB);
+            subImage.getGraphics().drawImage(scaledRawImage, 0, 0, null);
+        }
+        
+        return subImage;
     }
     
     public BufferedImage get(Point point) {

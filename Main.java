@@ -7,11 +7,13 @@ class Main {
     public static Spritesheet sheet;
     
     // Setting CARD_WIDTH to 0 disables card scaling
-    public static final double CARD_WIDTH = 0;
+    public static final int CARD_WIDTH = 100;
     
     public static final int DECK_CUT_X = 13;
     public static final int DECK_CUT_Y = 5;
     public static final int DECK_COUNT = 52;
+    
+    public static final boolean POTATO_MODE = false;
         
     public static void main(String[] args) {
         try {
