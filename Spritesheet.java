@@ -1,4 +1,4 @@
-import java.awt.Point;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 
 class Spritesheet {

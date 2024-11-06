@@ -6,10 +6,12 @@ import java.io.File;
 class Main {
     public static Spritesheet sheet;
     
-    private static final int CARD_WIDTH = 200;
+    // Setting CARD_WIDTH to 0 disables card scaling
+    public static final double CARD_WIDTH = 0;
     
-    private static final int DECK_CUT_X = 13;
-    private static final int DECK_CUT_Y = 5;
+    public static final int DECK_CUT_X = 13;
+    public static final int DECK_CUT_Y = 5;
+    public static final int DECK_COUNT = 52;
         
     public static void main(String[] args) {
         try {
