@@ -1,0 +1,3 @@
+These build jar files are executable. They are generally unstable, and some may be out of date.
+
+You may need to extract deck.png into the same directory as the jar file in order to run it.
