@@ -15,6 +15,7 @@ class Frame extends JFrame {
     private final int CUTY = 5;
     
     private final int CARDS_PER_DECK = 52;
+    private final String DECK_IMAGE_FILE = "deck.png";
     
     private void resizeWindow() {
         setSize(Toolkit.getDefaultToolkit().getScreenSize());
@@ -62,12 +63,12 @@ class Frame extends JFrame {
         BufferedImage image = null;
         
         try {
-            image = ImageIO.read(new File("deck.png"));
+            image = ImageIO.read(new File(DECK_IMAGE_FILE));
         } catch (Exception e) {
             try {
                 // If no deck file is on disk, use bundled resource one
                 
-                Image rawImage = Resources.getAsImage("deck.png");
+                Image rawImage = Resources.getAsImage(DECK_IMAGE_FILE);
                 image = new BufferedImage(rawImage.getWidth(null), rawImage.getHeight(null), BufferedImage.TYPE_INT_ARGB);
                 
                 image.getGraphics().drawImage(rawImage, 0, 0, null);
@@ -86,8 +87,7 @@ class Frame extends JFrame {
             Card card = new Card(
                     container,
                     sheet.get(getCardCoords(i)),
-                    sheet.get(getCardCoords(CARDS_PER_DECK + 1)),
-                    new Point(100, 100)
+                    sheet.get(getCardCoords(CARDS_PER_DECK + 1))
             );
         }
                

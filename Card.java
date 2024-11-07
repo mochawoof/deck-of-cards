@@ -12,6 +12,12 @@ class Card extends JComponent {
     private Card thisCard;
     private JLayeredPane container;
     
+    private static final int START_POS_X = 100;
+    private static final int START_POS_Y = 100;
+    
+    private static final int FAN_X = 3;
+    private static final int FAN_Y = 3;
+    
     private boolean isMousePressed = false;
     private boolean isFlipped = false;
     
@@ -19,11 +25,11 @@ class Card extends JComponent {
     
     private static ArrayList<Card> cards = new ArrayList<Card>();
     
-    public Card(JLayeredPane container, BufferedImage image, BufferedImage flippedImage, Point initialPosition) {
+    public Card(JLayeredPane container, BufferedImage image, BufferedImage flippedImage) {
         setBounds(0, 0, 200, 200);
         this.image = image;
         this.flippedImage = flippedImage;
-        setBounds(initialPosition.x, initialPosition.y, image.getWidth(), image.getHeight());
+        setBounds(START_POS_X, START_POS_Y, image.getWidth(), image.getHeight());
         thisCard = this;
         this.container = container;
         cards.add(this);
@@ -44,7 +50,7 @@ class Card extends JComponent {
         moveAllIntoDeckItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 for (int i = 0; i < cards.size(); i++) {
-                    cards.get(i).setBounds(100, 100, image.getWidth(), image.getHeight());
+                    cards.get(i).setBounds(START_POS_X, START_POS_Y, image.getWidth(), image.getHeight());
                     container.moveToFront(cards.get(i));
                 }
                 refresh();
@@ -56,7 +62,7 @@ class Card extends JComponent {
         moveAllIntoFannedDeckItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 for (int i = 0; i < cards.size(); i++) {
-                    cards.get(i).setBounds(100 + (i * 2), 100 + (i * 2), image.getWidth(), image.getHeight());
+                    cards.get(i).setBounds(START_POS_X + (i * FAN_X), START_POS_Y + (i * FAN_Y), image.getWidth(), image.getHeight());
                     container.moveToFront(cards.get(i));
                 }
                 refresh();
