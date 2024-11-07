@@ -45,6 +45,18 @@ class Frame extends JFrame {
         JLayeredPane container = new JLayeredPane();
         add(container, BorderLayout.CENTER);
         
+        // Set look and feel to Nimbus
+        try {
+            for (UIManager.LookAndFeelInfo lafInfo : UIManager.getInstalledLookAndFeels()) {
+                if (lafInfo.getName().contains("Nimbus")) {
+                    UIManager.setLookAndFeel(lafInfo.getClassName());
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
         // Setup spritesheet
         
         BufferedImage image = null;
@@ -53,11 +65,14 @@ class Frame extends JFrame {
             image = ImageIO.read(new File("deck.png"));
         } catch (Exception e) {
             try {
+                // If no deck file is on disk, use bundled resource one
+                
                 Image rawImage = Resources.getAsImage("deck.png");
                 image = new BufferedImage(rawImage.getWidth(null), rawImage.getHeight(null), BufferedImage.TYPE_INT_ARGB);
                 
                 image.getGraphics().drawImage(rawImage, 0, 0, null);
             } catch (Exception ex) {
+                // This should never happen
                 ex.printStackTrace();
                 JOptionPane.showMessageDialog(null, "Failed to open deck spritesheet!", "Error", JOptionPane.ERROR_MESSAGE);
                 System.exit(1);
@@ -78,6 +93,7 @@ class Frame extends JFrame {
                
         setVisible(true);
         
+        // Tutorial bubble
         new Bubble(
                 container,
                 "Welcome to Cards! To move a card, just hold down on it with your mouse and drag it. You can double-click any card to flip it over. Right click on any card for even more options. \n\nClick to dismiss.",

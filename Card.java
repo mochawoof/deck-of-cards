@@ -28,6 +28,7 @@ class Card extends JComponent {
         this.container = container;
         cards.add(this);
         
+        // Right click menu
         rightClickMenu = new JPopupMenu();
         
         JMenuItem flipItem = new JMenuItem("Flip");
@@ -38,6 +39,7 @@ class Card extends JComponent {
         });
         rightClickMenu.add(flipItem);
         
+        // Define menu items
         JMenuItem moveAllIntoDeckItem = new JMenuItem("Move All Into Deck");
         moveAllIntoDeckItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
