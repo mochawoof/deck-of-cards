@@ -89,6 +89,23 @@ class Card extends JComponent {
         });
         rightClickMenu.add(shuffleAllItem);
         
+        JMenuItem flipAllItem = new JMenuItem("Flip All");
+        flipAllItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                boolean isAllFlipped = true;
+                for (int i = 0; i < cards.size(); i++) {
+                    if (isAllFlipped && !cards.get(i).isFlipped) {
+                        isAllFlipped = false;
+                    }
+                }
+                for (int i = 0; i < cards.size(); i++) {
+                    cards.get(i).isFlipped = !isAllFlipped;
+                }
+                refresh();
+            }
+        });
+        rightClickMenu.add(flipAllItem);
+        
         container.add(this);
         container.moveToFront(this);
         

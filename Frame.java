@@ -1,6 +1,7 @@
 import javax.swing.*;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -46,13 +47,24 @@ class Frame extends JFrame {
         
         // Setup spritesheet
         
+        BufferedImage image = null;
+        
         try {
-            sheet = new Spritesheet(ImageIO.read(new File("deck.png")), CUTX, CUTY, CARD_SCALE);
+            image = ImageIO.read(new File("deck.png"));
         } catch (Exception e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Failed to open deck spritesheet!", "Error", JOptionPane.ERROR_MESSAGE);
-            System.exit(1);
+            try {
+                Image rawImage = Resources.getAsImage("deck.png");
+                image = new BufferedImage(rawImage.getWidth(null), rawImage.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+                
+                image.getGraphics().drawImage(rawImage, 0, 0, null);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Failed to open deck spritesheet!", "Error", JOptionPane.ERROR_MESSAGE);
+                System.exit(1);
+            }
         }
+        
+        sheet = new Spritesheet(image, CUTX, CUTY, CARD_SCALE);
         
         // Add cards
         for (int i = 1; i <= CARDS_PER_DECK; i++) {
