@@ -11,6 +11,7 @@ class Card extends JComponent {
     private BufferedImage flippedImage;
     private Point position;
     private Card thisCard;
+    private JLayeredPane container;
     
     private boolean isMousePressed = false;
     private boolean isFlipped = false;
@@ -25,6 +26,7 @@ class Card extends JComponent {
         this.flippedImage = flippedImage;
         position = initialPosition;
         thisCard = this;
+        this.container = container;
         cards.add(this);
         
         rightClickMenu = new JPopupMenu();
@@ -65,7 +67,7 @@ class Card extends JComponent {
                                 while (isMousePressed) {
                                     Point mousePosition = MouseInfo.getPointerInfo().getLocation();
                                     position = new Point(mousePosition.x - mouseOffset.x, mousePosition.y - mouseOffset.y);
-                                    repaint();
+                                    refresh();
                                 }
                                 
                                 return 1;
@@ -95,6 +97,10 @@ class Card extends JComponent {
             @Override
             public void mouseClicked(MouseEvent e) {}
         });
+    }
+    
+    private void refresh() {
+        container.repaint();
     }
     
     private void flip() {

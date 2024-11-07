@@ -8,10 +8,12 @@ class Bubble extends JPanel {
     public JTextArea label;
     
     private Color backColor = new Color(255, 255, 225);
+    private JLayeredPane container;
     
-    public Bubble(String labelText, int fontSize, int height, Point position) {
+    public Bubble(JLayeredPane container, String labelText, int fontSize, int height, Point position) {
         setLayout(new BorderLayout());
         setBackground(new Color(0, 0, 0, 0));
+        this.container = container;
         
         add(new JLabel(Resources.getAsImageIcon("resources/bubble-page-start.png")), BorderLayout.PAGE_START);
         add(new JLabel(Resources.getAsImageIcon("resources/bubble-page-end.png")), BorderLayout.PAGE_END);
@@ -39,6 +41,9 @@ class Bubble extends JPanel {
 
         setSize(315, height);
         
+        container.add(this);
+        container.moveToFront(this);
+        
         // If position is null, spawn in the center of the screen
         if (position == null) {
             Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -55,6 +60,7 @@ class Bubble extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 setVisible(false);
+                refresh();
             }
             
             // More empty overrides
@@ -68,5 +74,9 @@ class Bubble extends JPanel {
             public void mousePressed(MouseEvent e) {}
         });
         }
+    }
+    
+    private void refresh() {
+        container.repaint();
     }
 }

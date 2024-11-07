@@ -60,19 +60,18 @@ class Frame extends JFrame {
                     container,
                     sheet.get(getCardCoords(i)),
                     sheet.get(getCardCoords(CARDS_PER_DECK + 1)),
-                    new Point(100 + (i * 2), 100 + (i * 2))
+                    new Point(100, 100)
             );
         }
                
         setVisible(true);
         
-        container.add(
-            new Bubble(
+        new Bubble(
+                container,
                 "Welcome to Cards! To move a card, just hold down on it with your mouse and drag it. You can double-click any card to flip it over. Right click on any card for even more options. \n\nClick to dismiss.",
                 10,
                 120,
                 null
-            )
         );
     }
     
