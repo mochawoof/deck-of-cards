@@ -9,7 +9,6 @@ import java.util.ArrayList;
 class Card extends JComponent {
     private BufferedImage image;
     private BufferedImage flippedImage;
-    private Point position;
     private Card thisCard;
     private JLayeredPane container;
     
@@ -18,13 +17,13 @@ class Card extends JComponent {
     
     private JPopupMenu rightClickMenu;
     
-    private ArrayList<Card> cards = new ArrayList<Card>();
+    private static ArrayList<Card> cards = new ArrayList<Card>();
     
     public Card(JLayeredPane container, BufferedImage image, BufferedImage flippedImage, Point initialPosition) {
         setBounds(0, 0, 200, 200);
         this.image = image;
         this.flippedImage = flippedImage;
-        position = initialPosition;
+        setBounds(initialPosition.x, initialPosition.y, image.getWidth(), image.getHeight());
         thisCard = this;
         this.container = container;
         cards.add(this);
@@ -40,12 +39,54 @@ class Card extends JComponent {
         rightClickMenu.add(flipItem);
         
         JMenuItem moveAllIntoDeckItem = new JMenuItem("Move All Into Deck");
+        moveAllIntoDeckItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                for (int i = 0; i < cards.size(); i++) {
+                    cards.get(i).setBounds(100, 100, image.getWidth(), image.getHeight());
+                    container.moveToFront(cards.get(i));
+                }
+                refresh();
+            }
+        });
         rightClickMenu.add(moveAllIntoDeckItem);
         
         JMenuItem moveAllIntoFannedDeckItem = new JMenuItem("Move All Into Fanned Deck");
+        moveAllIntoFannedDeckItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                for (int i = 0; i < cards.size(); i++) {
+                    cards.get(i).setBounds(100 + (i * 2), 100 + (i * 2), image.getWidth(), image.getHeight());
+                    container.moveToFront(cards.get(i));
+                }
+                refresh();
+            }
+        });
         rightClickMenu.add(moveAllIntoFannedDeckItem);
         
         JMenuItem shuffleAllItem = new JMenuItem("Shuffle All");
+        shuffleAllItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                for (int i = 0; i < cards.size(); i++) {
+                    int randIndex = (int) Math.floor(Math.random() * (cards.size() - 1));
+                    
+                    Rectangle firstBounds = cards.get(i).getBounds();
+                    int firstLayer = container.getLayer(cards.get(i));
+                    int firstLayerPosition = container.getPosition(cards.get(i));
+                    
+                    Rectangle secondBounds = cards.get(randIndex).getBounds();
+                    int secondLayer = container.getLayer(cards.get(randIndex));
+                    int secondLayerPosition = container.getPosition(cards.get(randIndex));
+                    
+                    cards.get(i).setBounds(secondBounds);
+                    container.setLayer(cards.get(i), secondLayer);
+                    container.setPosition(cards.get(i), secondLayerPosition);
+                    
+                    cards.get(randIndex).setBounds(firstBounds);
+                    container.setLayer(cards.get(randIndex), firstLayer);
+                    container.setPosition(cards.get(randIndex), firstLayerPosition);
+                }
+                refresh();
+            }
+        });
         rightClickMenu.add(shuffleAllItem);
         
         container.add(this);
@@ -66,7 +107,7 @@ class Card extends JComponent {
                             public Integer doInBackground() {
                                 while (isMousePressed) {
                                     Point mousePosition = MouseInfo.getPointerInfo().getLocation();
-                                    position = new Point(mousePosition.x - mouseOffset.x, mousePosition.y - mouseOffset.y);
+                                    setBounds(mousePosition.x - mouseOffset.x, mousePosition.y - mouseOffset.y, image.getWidth(), image.getHeight());
                                     refresh();
                                 }
                                 
@@ -110,7 +151,6 @@ class Card extends JComponent {
     
     @Override
     public void paintComponent(Graphics g) {
-        setBounds(position.x, position.y, image.getWidth(), image.getHeight());
         super.paintComponent(g);
         
         if (!isFlipped) {

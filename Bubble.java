@@ -41,8 +41,7 @@ class Bubble extends JPanel {
 
         setSize(315, height);
         
-        container.add(this);
-        container.moveToFront(this);
+        container.add(this, JLayeredPane.POPUP_LAYER);
         
         // If position is null, spawn in the center of the screen
         if (position == null) {
