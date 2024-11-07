@@ -57,12 +57,11 @@ class Frame extends JFrame {
         // Add cards
         for (int i = 1; i <= CARDS_PER_DECK; i++) {
             Card card = new Card(
+                    container,
                     sheet.get(getCardCoords(i)),
                     sheet.get(getCardCoords(CARDS_PER_DECK + 1)),
                     new Point(100 + (i * 2), 100 + (i * 2))
             );
-            container.add(card);
-            container.moveToFront(card);
         }
                
         setVisible(true);

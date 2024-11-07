@@ -19,7 +19,7 @@ class Card extends JComponent {
     
     private ArrayList<Card> cards = new ArrayList<Card>();
     
-    public Card(BufferedImage image, BufferedImage flippedImage, Point initialPosition) {
+    public Card(JLayeredPane container, BufferedImage image, BufferedImage flippedImage, Point initialPosition) {
         setBounds(0, 0, 200, 200);
         this.image = image;
         this.flippedImage = flippedImage;
@@ -46,6 +46,9 @@ class Card extends JComponent {
         JMenuItem shuffleAllItem = new JMenuItem("Shuffle All");
         rightClickMenu.add(shuffleAllItem);
         
+        container.add(this);
+        container.moveToFront(this);
+        
         addMouseListener(new MouseListener() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -55,7 +58,7 @@ class Card extends JComponent {
                 if (e.getButton() == MouseEvent.BUTTON1) {
                     isMousePressed = true;
                     if (e.getClickCount() != 2) {
-                        ((JLayeredPane) getParent()).moveToFront(thisCard);
+                        container.moveToFront(thisCard);
                         
                         new SwingWorker() {
                             public Integer doInBackground() {
@@ -63,7 +66,7 @@ class Card extends JComponent {
                                     Point mousePosition = MouseInfo.getPointerInfo().getLocation();
                                     position = new Point(mousePosition.x - mouseOffset.x, mousePosition.y - mouseOffset.y);
                                     repaint();
-                                }                      
+                                }
                                 
                                 return 1;
                             }
