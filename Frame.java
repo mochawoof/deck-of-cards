@@ -71,6 +71,7 @@ class Frame extends JFrame {
             new Bubble(
                 "Welcome to Cards! To move a card, just hold down on it with your mouse and drag it. You can double-click any card to flip it over. Right click on any card for even more options. \n\nClick to dismiss.",
                 10,
+                120,
                 null
             )
         );
