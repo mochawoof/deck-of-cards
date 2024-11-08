@@ -37,7 +37,6 @@ class Frame extends JFrame {
     
     public Frame() {
         setUndecorated(true);
-        ((JComponent) getContentPane()).setOpaque(false);
         setBackground(new Color(50, 100, 50, 0));
         setTitle("Cards");
         setDefaultCloseOperation(EXIT_ON_CLOSE);

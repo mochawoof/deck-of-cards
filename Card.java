@@ -166,7 +166,7 @@ class Card extends JComponent {
     }
     
     private void refresh() {
-        container.repaint();
+        repaint();
     }
     
     private void flip() {
