@@ -53,7 +53,7 @@ class Card extends JComponent {
                     cards.get(i).setBounds(START_POS_X, START_POS_Y, image.getWidth(), image.getHeight());
                     container.moveToFront(cards.get(i));
                 }
-                refresh();
+                repaint();
             }
         });
         rightClickMenu.add(moveAllIntoDeckItem);
@@ -65,10 +65,26 @@ class Card extends JComponent {
                     cards.get(i).setBounds(START_POS_X + (i * FAN_X), START_POS_Y + (i * FAN_Y), image.getWidth(), image.getHeight());
                     container.moveToFront(cards.get(i));
                 }
-                refresh();
+                repaint();
             }
         });
         rightClickMenu.add(moveAllIntoFannedDeckItem);
+        
+        JMenuItem splitDeckItem = new JMenuItem("Split Deck");
+        splitDeckItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            
+            }
+        });
+        rightClickMenu.add(splitDeckItem);
+        
+        JMenuItem splitFannedDeckItem = new JMenuItem("Split Fanned Deck");
+        splitFannedDeckItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            
+            }
+        });
+        rightClickMenu.add(splitFannedDeckItem);
         
         JMenuItem shuffleAllItem = new JMenuItem("Shuffle All");
         shuffleAllItem.addActionListener(new ActionListener() {
@@ -92,7 +108,7 @@ class Card extends JComponent {
                     container.setLayer(cards.get(randIndex), firstLayer);
                     container.setPosition(cards.get(randIndex), firstLayerPosition);
                 }
-                refresh();
+                repaint();
             }
         });
         rightClickMenu.add(shuffleAllItem);
@@ -109,7 +125,7 @@ class Card extends JComponent {
                 for (int i = 0; i < cards.size(); i++) {
                     cards.get(i).isFlipped = !isAllFlipped;
                 }
-                refresh();
+                container.repaint();
             }
         });
         rightClickMenu.add(flipAllItem);
@@ -133,7 +149,7 @@ class Card extends JComponent {
                                 while (isMousePressed) {
                                     Point mousePosition = MouseInfo.getPointerInfo().getLocation();
                                     setBounds(mousePosition.x - mouseOffset.x, mousePosition.y - mouseOffset.y, image.getWidth(), image.getHeight());
-                                    refresh();
+                                    repaint();
                                 }
                                 
                                 return 1;
@@ -163,10 +179,6 @@ class Card extends JComponent {
             @Override
             public void mouseClicked(MouseEvent e) {}
         });
-    }
-    
-    private void refresh() {
-        repaint();
     }
     
     private void flip() {
